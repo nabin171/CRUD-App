@@ -21,6 +21,20 @@ const App = () => {
           "Content-Type": "application/json",
         },
       }).then((res) => res.json()),
+      
+  });
+
+  //Mutation for deleting a user
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: (id) =>
+      fetch(`http://localhost:2000/users/${id}`, {
+        method: "DELETE",
+        body: JSON.stringify(),
+      }).then((res) => res.json()),
+    onSuccess: () => {
+      // Refetch data after successful deletion
+      queryClient.invalidateQueries(["users"]);
+    },
   });
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
@@ -51,13 +65,13 @@ const App = () => {
         Add Posts
       </button>
       <button className="bg-red-200 p-2 m-2 ">Edit Posts</button>
-      <button className="bg-red-200 p-2 m-2 ">Delete Posts</button>
 
       {data.map((item) => (
         <div key={item.id}>
           <h1>ID:{item.id}</h1>
           <h1>Name:{item.name}</h1>
           <h1>Email:{item.email}</h1>
+          <button className="bg-red-200 p-2 m-2" onClick={()=>handleDelete(item.id)}>Delete Posts</button>
         </div>
       ))}
     </div>
